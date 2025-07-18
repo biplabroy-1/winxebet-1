@@ -130,7 +130,7 @@ const App: React.FC = () => {
         if (res.success) {
           console.log({ res });
           setTrasition(false);
-          window.location.href = res.payload.data.paymentpage_url;
+          window.location.href = res.payload.data.payment_url;
         }
       })
       .catch((error: any) => {
@@ -300,20 +300,6 @@ const App: React.FC = () => {
                   placeholder="Deposit amount"
                   value={depositAmount}
                   onChange={handleAmountChange}
-                />
-              </div>
-
-              <div className="relative mb-4">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <span className="text-gray-500">+88</span>
-                </div>
-                <input
-                  disabled={pending}
-                  type="text"
-                  className="block w-full pl-12 pr-4 py-3 border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
-                  placeholder="Wallet Number"
-                  value={walletNumber}
-                  onChange={handleWalletNumberChange}
                 />
               </div>
 
