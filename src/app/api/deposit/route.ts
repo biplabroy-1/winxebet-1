@@ -45,17 +45,17 @@ export const POST = async (req: NextRequest) => {
       return Response.json({ message: "Deposit Failed" }, { status: 500 });
     }
     
-    // const { data } = paymentData
-    // await db.aPayDeposit.create({
-    //   data: {
-    //     orderId: String(data.dp_transaction_id),
-    //     trxId: trx_id,
-    //     ps: ps.paymentSystem,
-    //     user: {
-    //       connect: { id: user.id },
-    //     },
-    //   },
-    // });
+    const { data } = paymentData
+    await db.aPayDeposit.create({
+      data: {
+        orderId: String(data.dp_transaction_id),
+        trxId: trx_id,
+        ps: ps.paymentSystem,
+        user: {
+          connect: { id: user.id },
+        },
+      },
+    });
 
     return Response.json({ payload: paymentData, success: true }, { status: 200 });
   } catch (error) {
