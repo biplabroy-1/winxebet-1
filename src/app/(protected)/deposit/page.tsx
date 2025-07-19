@@ -11,7 +11,6 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { MdOutlineSupportAgent, MdHistory } from "react-icons/md";
 import { CiWallet } from "react-icons/ci";
-import { formatBDT } from "@/lib/utils";
 import { CiGift } from "react-icons/ci";
 import { PulseLoader } from "react-spinners";
 import PageLoader from "@/components/loader/PageLoader";
