@@ -6,7 +6,6 @@ import { formatBDT } from "@/lib/utils";
 import moment from "moment";
 import { IoReturnUpBack } from "react-icons/io5";
 import Link from "next/link";
-import { Prisma } from "@prisma/client";
 
 const style = {
   position: "absolute",
@@ -23,12 +22,14 @@ const style = {
 
 interface InvoiceModalProps {
   modalOpne?: boolean;
-  withdraw: Prisma.WithdrawGetPayload<{ include: { card: true } }>;
+  withdraw: any;
+  walletNumber: string;
   onClose: () => void;
 }
 const InvoiceModal = ({
   modalOpne = true,
   withdraw,
+  walletNumber,
   onClose,
 }: InvoiceModalProps) => {
   const [open, setOpen] = React.useState(modalOpne);
@@ -40,8 +41,7 @@ const InvoiceModal = ({
   const {
     amount,
     expire,
-    createdAt,
-    card: { walletNumber },
+    createdAt
   } = withdraw;
 
   return (

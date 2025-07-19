@@ -21,11 +21,11 @@ import Image from "next/image";
 
 const HeroSlider = () => {
   const sliders = [
-    { image: slider_1 },
-    { image: slider_2 },
-    { image: slider_3 },
-    { image: slider_4 },
-    { image: slider_5 },
+    { image: slider_1.src },
+    { image: slider_2.src },
+    { image: slider_3.src },
+    { image: slider_4.src },
+    { image: slider_5.src },
   ];
 
   return (

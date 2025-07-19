@@ -62,7 +62,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
 }) => {
   return (
     <Popover>
-      <PopoverTrigger>
+      <PopoverTrigger asChild>
         <div
           className={`overflow-x-hidden overflow-y-hidden p-0.5 mr-2 border border-t border-r border-b border-l border-solid bg-[linear-gradient(rgb(255,230,0),rgb(255,184,0))] border-orange-200 border-opacity-50  rounded-[39.168px] shadow-[rgb(255,242,166)_0px_1.9584px_0px_1.7px_inset,rgb(182,65,0)_0px_1.9584px_0px_0px] w-[39px] h-[39px] ${className}`}
         >
@@ -102,7 +102,7 @@ const BalanceDisplay: React.FC<BalanceDisplayProps> = ({
   return (
     <>
       <Popover>
-        <PopoverTrigger>
+        <PopoverTrigger asChild>
           <button
             onClick={toggleDropdown}
             aria-expanded={isDropdownOpen}

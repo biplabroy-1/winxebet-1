@@ -19,7 +19,6 @@ import { Input } from "@/components/ui/input";
 import { useMakeWithdrawMutation } from "@/lib/features/withdrawSlice";
 import { toast } from "sonner";
 import InvoiceModal from "./invoice-modal";
-import { Prisma } from "@prisma/client";
 import { CiWallet } from "react-icons/ci";
 import PaymentMethod from "@/components/PaymentMethod";
 import { INTERNAL_SERVER_ERROR } from "@/error";
@@ -29,11 +28,15 @@ interface WithdrawFormProps {
 }
 
 const WithdrawForm = ({ wallets }: WithdrawFormProps) => {
-  const [withdraw, setWithdraw] =
-    useState<Prisma.WithdrawGetPayload<{ include: { card: true } }>>();
+  const [withdraw, setWithdraw] = useState<any>();
 
   const form = useForm<zod.infer<typeof withdrawSchema>>({
-    defaultValues: { amount: "", password: "", walletNumber: "" },
+    defaultValues: {
+      amount: "",
+      password: "",
+      walletNumber: "",
+      ps: { paymentSystem: "", image: "", label: "" },
+    },
     resolver: zodResolver(withdrawSchema),
   });
 
@@ -42,13 +45,13 @@ const WithdrawForm = ({ wallets }: WithdrawFormProps) => {
   const handleWithdraw = (data: zod.infer<typeof withdrawSchema>) => {
     makeWithdrawApi({
       amount: +data.amount,
-      account_number: data.walletNumber,
+      walletNumber: data.walletNumber,
       password: data.password,
-      ps: selectedPaymentMethod.name,
+      ps: data.ps,
     })
       .unwrap()
       .then((res) => {
-        // setWithdraw(res.withdraw);
+        setWithdraw(res.payload);
         console.log({ res });
       })
       .catch((error) => {
@@ -59,6 +62,16 @@ const WithdrawForm = ({ wallets }: WithdrawFormProps) => {
         }
       });
   };
+
+  useEffect(() => {
+    if (selectedPaymentMethod) {
+      form.setValue("ps", {
+        paymentSystem: selectedPaymentMethod.paymentSystem,
+        image: selectedPaymentMethod.image,
+        label: selectedPaymentMethod.label,
+      });
+    }
+  }, [selectedPaymentMethod, form]);
 
   useEffect(() => {
     if (wallets) {
@@ -89,7 +102,7 @@ const WithdrawForm = ({ wallets }: WithdrawFormProps) => {
             {wallets?.map((pw: any, i: number) => (
               <PaymentMethod
                 key={i}
-                method={pw}
+                methods={pw}
                 selectedPaymentMethod={selectedPaymentMethod!}
                 onClick={() => setSelectedPaymentMethod(pw)}
               />
@@ -112,7 +125,7 @@ const WithdrawForm = ({ wallets }: WithdrawFormProps) => {
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder={`${selectedPaymentMethod?.min_withdrawals} ~ ${selectedPaymentMethod?.max_withdrawals}`}
+                      placeholder={`${selectedPaymentMethod?.min_withdrawals || 0} BDT ~ ${selectedPaymentMethod?.max_withdrawals || 10000} BDT`}
                       disabled={isLoading}
                       className="w-full pl-20"
                     />
@@ -167,6 +180,7 @@ const WithdrawForm = ({ wallets }: WithdrawFormProps) => {
 
             <button
               disabled={isLoading}
+              type="submit"
               className="text-white disabled:cursor-not-allowed disabled:bg-blue-800 bg-blue-600 hover:bg-blue-700 hover:transition-colors px-4 py-2 cursor-pointer rounded-sm shadow-sm w-full mt-8"
             >
               {isLoading ? "Withdrawing..." : "Withdraw"}
@@ -176,6 +190,7 @@ const WithdrawForm = ({ wallets }: WithdrawFormProps) => {
 
         {withdraw && (
           <InvoiceModal
+            walletNumber={form.getValues("walletNumber")}
             onClose={() => setWithdraw(undefined)}
             modalOpne={!!withdraw}
             withdraw={withdraw}

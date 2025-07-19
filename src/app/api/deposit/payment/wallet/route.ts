@@ -68,7 +68,6 @@ export const GET = async () => {
     );
 
     const bonus = await db.bonus.findFirst({ where: {} });
-    console.log(paymentSystemsPayload);
 
     return Response.json(
       { payload: { wallets: paymentSystemsPayload, bonus }, success: true },

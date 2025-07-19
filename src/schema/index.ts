@@ -57,6 +57,11 @@ export const withdrawSchema = zod.object({
   amount: zod.string().min(1, "Enter amount"),
   password: zod.string().min(1, "Password is required"),
   walletNumber: zod.string().min(1, "Wallet or Account number is required"),
+  ps: zod.object({
+    paymentSystem: zod.string().min(1, "Payment System is required"),
+    image: zod.string().min(1, "Payment System is required"),
+    label: zod.string().min(1, "Payment System is required"),
+  }),
 });
 
 export const accountUpdateSchema = zod.object({

@@ -4,17 +4,16 @@ import Image from "next/image";
 import React from "react";
 
 interface PaymentMethodsPros {
-  method: any;
+  methods: any;
   selectedPaymentMethod: any;
   onClick: () => void;
 }
 
 const PaymentMethod = ({
-  method,
+  methods,
   selectedPaymentMethod,
   onClick,
 }: PaymentMethodsPros) => {
-  console.log(method, selectedPaymentMethod);
 
   return (
     <button
@@ -23,31 +22,31 @@ const PaymentMethod = ({
     >
       <div
         className={`w-24 h-24 rounded-lg border-2 flex flex-col items-center justify-center p-3 transition-all ${
-          selectedPaymentMethod?.name === method.name
+          selectedPaymentMethod?.paymentSystem === methods.paymentSystem
             ? "border-blue-500 bg-blue-50"
             : "border-gray-200 hover:border-gray-300"
         }`}
       >
         <Image
-          src={method.image}
+          src={methods.image}
           width={40}
           height={30}
           unoptimized
-          alt={method.label}
+          alt={methods.label}
           className="w-[40px] h-auto"
         />
         <span
           className={`mt-2 text-sm font-medium ${
-            selectedPaymentMethod?.name === method.name
+            selectedPaymentMethod?.name === methods.name
               ? "text-blue-600"
               : "text-gray-700"
           }`}
         >
-          {method.label}
+          {methods.label}
         </span>
       </div>
     </button>
   );
 };
 
-export default PaymentMethod;
+export default React.memo(PaymentMethod);

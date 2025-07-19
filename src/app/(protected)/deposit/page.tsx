@@ -30,7 +30,6 @@ const App: React.FC = () => {
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<any>();
   const [depositAmount, setDepositAmount] = useState<string>("");
-  const [walletNumber, setWalletNumber] = useState("");
   const [selectedBonus, setSelectedBonus] = useState<{
     id: string;
     label: string;
@@ -83,10 +82,6 @@ const App: React.FC = () => {
     setSelectedAmountButton(null);
   };
 
-  const handleWalletNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setWalletNumber(e.target.value);
-  };
-
   const calculateBonus = (amount: number) => {
     if (!selectedBonus) {
       return 0;
@@ -114,27 +109,25 @@ const App: React.FC = () => {
       setTrasition(false);
       return 0;
     }
-    if (!walletNumber) {
-      setError("Please Enter wallet number");
-      setTrasition(false);
-      return 0;
-    }
 
     makeDeposit({
       amount: +depositAmount + +bonusAmount,
-      account_number: walletNumber,
       ps: selectedPaymentMethod,
     })
       .unwrap()
       .then((res) => {
         if (res.success) {
-          console.log({ res });
           setTrasition(false);
-          window.location.href = res.payload.data.payment_url;
+          window.open(
+            res.payload.data.payment_url,
+            "paymentPopup",
+            "width=800,height=600,scrollbars=yes,resizable=yes"
+          );
+          toast.success("Pay from Newly Opened Tab");
         }
       })
       .catch((error: any) => {
-        console.log({ error });
+        console.error({ error });
         if (error?.data?.error) {
           toast.error(error.data.error);
         } else {
@@ -203,10 +196,6 @@ const App: React.FC = () => {
     }
   }, [depositAmount]);
 
-  useEffect(() => {
-    console.log({ selectedPaymentMethod });
-  }, [selectedPaymentMethod]);
-
   return (
     <>
       {data && !isLoading && user && (
@@ -252,7 +241,7 @@ const App: React.FC = () => {
                 {wallets?.map((pw, i) => (
                   <PaymentMethod
                     key={i}
-                    method={pw}
+                    methods={pw}
                     selectedPaymentMethod={selectedPaymentMethod!}
                     onClick={() => setSelectedPaymentMethod(pw)}
                   />
@@ -306,20 +295,10 @@ const App: React.FC = () => {
               {error && <span className="text-sm text-red-700 ">{error}</span>}
               <div className="text-sm text-gray-600 mb-4 flex justify-between">
                 <span>
-                  Min:
-                  {formatBDT(
-                    selectedPaymentMethod
-                      ? +selectedPaymentMethod.min_deposit
-                      : 0
-                  )}
+                  Min: 400
                 </span>
                 <span>
-                  Max:{" "}
-                  {formatBDT(
-                    selectedPaymentMethod
-                      ? +selectedPaymentMethod!.max_deposit
-                      : 0
-                  )}
+                  Max: 50000
                 </span>
               </div>
 
